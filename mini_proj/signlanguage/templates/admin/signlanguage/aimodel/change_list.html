@@ -1,0 +1,68 @@
+{% extends "admin/change_list.html" %} {% load static %} {% block extrahead %}
+{{ block.super }}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const ctx = document.getElementById("myChart").getContext("2d");
+
+    // Sample data
+    const chartData = {{ chart_data | safe }};
+    const linedata = {{line_data | safe}};
+
+
+    // Render the chart
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: chartData.map((d) => d['x']),
+        datasets: [{
+            label: "model accuracy",
+            data: chartData,
+            backgroundColor: "rgba(220,20,20,0.5)",
+          },{
+            label: 'model usage',
+            type: 'line',
+            data: linedata,
+            fill:false,
+            borderColor: 'rgb(204, 223, 153)',
+            lineTension : 0.2,
+            pointRadius : 0,
+          }],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          yAxes:  [{
+            ticks: {
+              beginAtZero: true,
+            }
+          }],
+          {% comment %} xAxes:  [{
+            ticks: {
+              fontColor: this.tickColor
+            },
+          }], {% endcomment %}
+        },
+      },
+    });
+  });
+</script>
+
+{% endblock %} {% block content %}
+<!-- Render our chart -->
+
+<h2>모델별 성능</h2>
+<div style="width: 80%">
+  <canvas
+    style="margin-bottom: 30px; width: 60%; height: 30%"
+    id="myChart"
+  ></canvas>
+</div>
+
+<h2>모델 상세관리</h2>
+<!-- Render the rest of the ChangeList view -->
+{{ block.super }} {% endblock %}

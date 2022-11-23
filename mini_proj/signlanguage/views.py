@@ -10,7 +10,7 @@ from keras.models import load_model
 
 
 # from pybo.model import Result
-from .models import *
+from .models import Result
 
 # Create your views here.
 
